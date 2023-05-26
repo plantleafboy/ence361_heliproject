@@ -1,13 +1,15 @@
 //*****************************************************************************
 //
-// ENCE361 Heli-copter Project
+// main.c
 //
-// Authors: Alex, Ismail
-// Last modified:   7/05/2023
+// Authors: Alex Long, Ismail Sarwari
+// Last modified:   26/05/2023
 //
+//main control file for the helicopter, the program contains code to run 
+//a helicopter rig. It supports the helicopter in controlling its altitude
+//and yaw.
 //*****************************************************************************
-//
-//*****************************************************************************
+
 
 #include <helistate.h>
 #include <pi_control.h>
@@ -37,16 +39,13 @@
 #include "pi_control.h"
 
 //*****************************************************************************
-// Constants
+// Setting Globals, variables and constants
 //*****************************************************************************
 
 
 #define YAW_REF_PORT_BASE GPIO_PORTC_BASE
 #define YAW_REF_PIN GPIO_PIN_4
 
-//*****************************************************************************
-// Global variables
-//*****************************************************************************
 int mean_val; //adc mean value from buffer
 static int main_duty;
 static int tail_duty;
@@ -68,9 +67,8 @@ SysTickIntHandler(void)
 
 }
 
-
 //*****************************************************************************
-// Initialisation functions for the clock (incl. SysTick), ADC, display
+// Initialisation the clock (incl. SysTick), ADC, display
 //*****************************************************************************
 void
 initClock (void)
@@ -101,7 +99,8 @@ initDisplay (void)
 
 //*****************************************************************************
 //
-// Function to display the Percentage value and sample count.
+// Function displays on the screen - Altitude percentage, yaw, duty to main motor
+//and duty to tail motor
 //
 //*****************************************************************************
 void
@@ -117,7 +116,6 @@ displayPercentage(int alt, int yaw, int mainDuty, int tailDuty) {
     usnprintf (string, sizeof(string), "Yaw:   %4d", yaw); //perc of altitude display
     OLEDStringDraw (string, 0, 1);
 
-    //pwm duty cycles for each motor as perc
     usnprintf (string, sizeof(string), "Main Motor:%4d%%", mainDuty); //perc of altitude display
     OLEDStringDraw (string, 0, 2);
 
@@ -162,14 +160,16 @@ int
 main(void)
 {
     resetbuttons();
+    //initializing the program
     init_all();
-    // initialize pwm
+
     PWMOutputState(PWM0_BASE, PWM_OUT_7_BIT, true);
     PWMOutputState(PWM1_BASE, PWM_OUT_5_BIT, true);
 
     IntMasterEnable();
 
     setoffset(calc_meanVal());
+    
     int alt_per;
     set_state(LANDED);
 
