@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// Main flight controls
+//functions to handle and support the controls for the helicopter. Uses PI control
 //
 //*****************************************************************************
 
@@ -24,20 +24,20 @@ static int yaw_error_integrated = 0;
 
 //*****************************************************************************
 //
-// Function to change altitude of the helicopter. PI controller
+// Function to change the helicopters yaw. Takes a target input and 
+//uses PI control to reach the target. drives the tail motor by a calculated value
 //
 //*****************************************************************************
 
 int
 height_update(int target_alt, int current_alt)
 {
-    //float alt_error = target_alt - current_alt;
 
     double alt_error = target_alt - current_alt;
+    //Uses PI to handle the error and sets the alt_control
     double alt_control = (ALT_KP * alt_error) + (ALT_KI * (altitude_error_integrated + alt_error));
 
-    //float alt_control = (ALT_KP * alt_error) + (ALT_KI * (altitude_error_integrated + alt_error));
-
+    //Clips the alt_control value if it exceeds the max duty value 
     if (alt_control > MAX_DUTY_MAIN) {
         alt_control = MAX_DUTY_MAIN;
     } else if (alt_control < MIN_DUTY_MAIN) {
@@ -48,11 +48,13 @@ height_update(int target_alt, int current_alt)
 
 
     set_main_duty(alt_control);
+    //return the value of the alt_control to the main program 
     return alt_control;
 }
 //*****************************************************************************
 //
-// Function to change yaw of the helicopter. Pi controller
+// Function to change the helicopters yaw. Takes a target input and 
+//uses PI control to reach the target. drives the tail motor by a calculated value
 //
 //*****************************************************************************
 int
@@ -62,11 +64,10 @@ yaw_update(int target_yaw, int current_yaw)
     if (yaw_error < - 180){
         yaw_error += 360;
     }
+    //Uses a proportional gain to handle the error and sets the yaw_control
+    float yaw_control = (YAW_KP * yaw_error);
 
-//main controls
-
-    float yaw_control = (YAW_KP * yaw_error); //+ (YAW_KI * (yaw_error_integrated + yaw_error));
-
+    //Clips the yaw_control value if it exceeds the max duty value 
     if (yaw_control > MAX_DUTY_TAIL) {
         yaw_control = MAX_DUTY_TAIL;
     } else if (yaw_control < MIN_DUTY_TAIL) {
@@ -76,5 +77,6 @@ yaw_update(int target_yaw, int current_yaw)
     }
     set_tail_duty(yaw_control);
 
+    //return yaw_duty to the main program to be displayed
     return yaw_control;
 }
