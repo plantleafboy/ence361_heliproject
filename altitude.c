@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// Functions to do with the changing of altitude
+// Functions for handling the helicopters altitude
 //
 //*****************************************************************************
 #include <stdint.h>
@@ -82,9 +82,6 @@ ADC_int_handler(void)
     // Place it in the circular buffer (advancing write index)
     writeCircBuf (&in_buffer, ulValue);
 
-
-
-
     //
     // Clean up, clearing the interrupt
     ADCIntClear(ADC0_BASE, 3);
@@ -93,13 +90,14 @@ ADC_int_handler(void)
 int
 altitude_percentage(int mean_val)
 {
-//    return ((zero_val - mean_val) * 100) / (zero_val - 890);
+    //returns the altitude as a percentage. Takes the mean ADC value as an argument 
     return ((zero_val - mean_val) * 100) / (zero_val - 1320);
 }
 
 int
 calc_meanVal(void)
 {
+    //returns the mean ADC value using values stored in the buffer
     int sum = 0;
     int i;
     for (i = 0; i < BUF_SIZE; i++) {
@@ -111,11 +109,13 @@ calc_meanVal(void)
 int16_t
 target_altitude (void)
 {
+    //returns the target altitude
     return target_alt;
 }
 
 void
 setoffset (int value)
 {
+    //set the offset_value
     zero_val = value;
 }
