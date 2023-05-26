@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// Functions to do with YAW
+// Functions for handling the yaw of the helicopter
 //
 //*****************************************************************************
 #include <helistate.h>
@@ -30,8 +30,6 @@ static uint64_t degree=0;
 static uint32_t prevb;
 
 
-
-
 // set up yaw pins and referance pins
 void init_yaw (void)
 {
@@ -52,15 +50,11 @@ void init_yaw (void)
 
 }
 
-//void yaw_int_handler (void) {
-//
-//    previous = current;
-//    current = GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_0|GPIO_PIN_1);
-//    direction = (previous << 2) | current;
-//    yaw -= table[direction];
-//    GPIOIntClear(GPIO_PORTB_BASE, GPIO_PIN_0|GPIO_PIN_1);
-//}
+// *******************************************************
+// quadratic decoder to track yaw by comparing states
+// *******************************************************
 void yawIntHandler(void) {
+    
     currenta = GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_0) &1;
     currentb = (GPIOPinRead(GPIO_PORTB_BASE,  GPIO_PIN_1)>>1) & 1;
 
@@ -112,7 +106,6 @@ void yawIntHandler(void) {
       yawtodegree();
       GPIOIntClear(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
  }
-
 
 
 void
