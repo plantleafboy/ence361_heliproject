@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// Functions to do with the switching of the helicopter
+// Functions for handling the switch for the helicopter and initialization
 //
 //*****************************************************************************
 #include <stdint.h>
@@ -18,7 +18,7 @@
 bool switch_position;
 bool pos_changed = false;
 
-//intialise switch 
+//initialize the switch
 void init_switch(void)
 {
     SysCtlPeripheralEnable(SWITCH_1_PERIPH);
@@ -28,8 +28,7 @@ void init_switch(void)
     switch_position = GPIOPinRead(SWITCH_1_PORT_BASE, SWITCH_1_PIN) == SWITCH_1_PIN;
 }
 
-
-//check swtich function
+//returns the current switch value
 int check_switch (void)
 {
     int switch_val = GPIOPinRead(SWITCH_1_PORT_BASE, SWITCH_1_PIN);
