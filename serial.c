@@ -1,3 +1,7 @@
+
+// *******************************************************
+// Code to handle the serial communication (not implemented in project)
+// *******************************************************
 #include <helistate.h>
 #include <pwm.h>
 #include <stdint.h>
